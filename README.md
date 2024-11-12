@@ -1,15 +1,15 @@
 # 🐦 Chirpy
 
 ## Description
-Chirpy is a robust HTTP server built in Go that powers a microblogging platform. It provides a RESTful API for creating and retrieving short messages called "chirps", along with user management capabilities. The server includes features like content moderation, request metrics tracking, and PostgreSQL integration.
+Chirpy is a robust HTTP server built in Go that powers a microblogging platform. It provides a RESTful API for creating and retrieving short messages called "chirps", along with secure user authentication.
 
 ## Why?
 Modern social platforms are often bloated with features and complex infrastructure. Chirpy aims to:
 - Demonstrate clean API design with Go
 - Show how to build a maintainable microservice
-- Implement practical features like content moderation and metrics
-- Serve as a reference for building production-ready web services
-- Showcase integration with PostgreSQL using type-safe queries
+- Implement secure user authentication
+- Showcase PostgreSQL integration with type-safe queries
+- Provide practical examples of password hashing and validation
 
 ## Quick Start
 1. Clone the repository
@@ -23,18 +23,32 @@ Modern social platforms are often bloated with features and complex infrastructu
    DB_URL="postgres://postgres:postgres@localhost:5432/chirpy?sslmode=disable"
    PLATFORM="dev"
    ```
-5. Run the server:
+5. Run migrations:
+   ```bash
+   goose -dir sql/schema postgres "postgres://postgres:postgres@localhost:5432/chirpy?sslmode=disable" up
+   ```
+6. Run the server:
    ```bash
    go run .
    ```
 
 ## Usage
-The API provides the following endpoints:
 
-### Users
+### Authentication
 ```
 POST /api/users
-Create a new user with email
+Create a new user with email and password
+{
+    "email": "user@example.com",
+    "password": "securepassword"
+}
+
+POST /api/login
+Login with email and password
+{
+    "email": "user@example.com",
+    "password": "securepassword"
+}
 ```
 
 ### Chirps
@@ -57,6 +71,12 @@ View request metrics
 POST /admin/reset
 Reset database (dev only)
 ```
+
+## Security Features
+- Password hashing using bcrypt
+- Secure password validation
+- No password exposure in responses
+- Database-level email uniqueness
 
 ## Contributing
 1. Fork the repository
