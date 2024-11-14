@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 	"time"
 
@@ -47,6 +48,7 @@ func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request)
 		HashedPassword: hashedPassword,
 	})
 	if err != nil {
+		log.Printf("Error creating user: %v", err)
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create user", err)
 		return
 	}
