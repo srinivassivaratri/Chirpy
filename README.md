@@ -45,12 +45,19 @@ Create a new user with email and password
 }
 
 POST /api/login
-Login with email and password (supports configurable token expiration)
+Login and get access & refresh tokens
 {
     "email": "user@example.com",
-    "password": "securepassword",
-    "expires_in_seconds": 3600  // optional
+    "password": "securepassword"
 }
+
+POST /api/refresh
+Get new access token using refresh token
+Headers: Authorization: Bearer <refresh_token>
+
+POST /api/revoke
+Revoke a refresh token
+Headers: Authorization: Bearer <refresh_token>
 ```
 
 ### Chirps
@@ -85,8 +92,9 @@ Check API health
 
 ## Security Features
 - Password hashing using bcrypt
-- JWT-based authentication
-- Configurable token expiration
+- JWT-based authentication with refresh tokens
+- Access tokens expire in 1 hour
+- Refresh tokens expire in 60 days
 - Content moderation (bad word filtering)
 - Database-level email uniqueness
 - Environment-based security controls
