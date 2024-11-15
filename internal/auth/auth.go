@@ -1,6 +1,8 @@
 package auth
 
 import (
+	"crypto/rand"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"net/http"
@@ -148,4 +150,23 @@ func GetBearerToken(headers http.Header) (string, error) {
 	// Return just the token part (second element in the split array)
 	// For "Bearer abc123", returns "abc123"
 	return splitAuth[1], nil
+}
+
+// MakeRefreshToken creates a random token used to get new access tokens
+func MakeRefreshToken() (string, error) {
+    // We need a place to store random data - 32 bytes gives us 256 bits of randomness
+    // which makes it practically impossible to guess the token
+    randomBytes := make([]byte, 32)
+
+    // We use the computer's built-in random number generator (usually based on 
+    // electrical noise or timing variations) to fill our byte array with unpredictable values
+    _, err := rand.Read(randomBytes)
+    if err != nil {
+        // If the random generator fails (very rare), we need to let the caller know
+        return "", fmt.Errorf("could not generate random bytes: %w", err)
+    }
+
+    // The random bytes could contain any values (0-255), which might cause problems in text.
+    // So we convert them to hexadecimal (0-9,a-f), which is safe to use anywhere
+    return hex.EncodeToString(randomBytes), nil
 }
