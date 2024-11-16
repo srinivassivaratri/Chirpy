@@ -96,12 +96,13 @@ func (cfg *apiConfig) handlerLogin(w http.ResponseWriter, r *http.Request) {
 	// - Their long-term pass (refresh token)
 	respondWithJSON(w, http.StatusOK, response{
 		User: User{
-			ID:        user.ID,        // Their unique ID number
-			CreatedAt: user.CreatedAt, // When they first signed up
-			UpdatedAt: user.UpdatedAt, // When their info was last changed
-			Email:     user.Email,     // Their email address
+			ID:          user.ID,
+			CreatedAt:   user.CreatedAt,
+			UpdatedAt:   user.UpdatedAt,
+			Email:       user.Email,
+			IsChirpyRed: user.IsChirpyRed,
 		},
-		Token:        accessToken,  // Their temporary pass
-		RefreshToken: refreshToken, // Their long-term pass
+		Token:        accessToken,
+		RefreshToken: refreshToken,
 	})
 }

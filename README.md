@@ -1,15 +1,15 @@
 # 🐦 Chirpy
 
 ## Description
-Chirpy is a robust HTTP server built in Go that powers a microblogging platform. It provides a RESTful API for creating and retrieving short messages called "chirps", along with secure user authentication.
+Chirpy is a robust HTTP server built in Go that powers a microblogging platform. Think of it like Twitter, but simpler and more focused. Users can post short messages called "chirps" and we handle all the behind-the-scenes magic to make it work smoothly.
 
 ## Why?
 Modern social platforms are often bloated with features and complex infrastructure. Chirpy aims to:
-- Demonstrate clean API design with Go
-- Show how to build a maintainable microservice
-- Implement secure user authentication with JWT
-- Showcase PostgreSQL integration with type-safe queries
-- Provide practical examples of password hashing and validation
+- Keep things simple and clean
+- Show how to build a secure and reliable service
+- Make user data safe with proper login systems
+- Store data efficiently using PostgreSQL
+- Handle passwords securely (because nobody wants their account hacked!)
 
 ## Quick Start
 1. Clone the repository
@@ -23,6 +23,7 @@ Modern social platforms are often bloated with features and complex infrastructu
    DB_URL="postgres://postgres:postgres@localhost:5432/chirpy?sslmode=disable"
    PLATFORM="dev"
    JWT_SECRET="your-secret-key"
+   POLKA_KEY="your-polka-api-key"
    ```
 5. Run migrations:
    ```bash
@@ -33,92 +34,86 @@ Modern social platforms are often bloated with features and complex infrastructu
    go run .
    ```
 
-## Usage
+## Features
 
-### Authentication
+### 🌟 Chirpy Red
+Our premium membership that gives users extra cool features:
+- Edit chirps after posting
+- More features coming soon!
+- Automatic activation through Polka payment system
+
+### 👤 User Management
 ```http
 POST /api/users
-Create a new user with email and password
-{
-    "email": "user@example.com",
-    "password": "securepassword"
-}
+Create a new account
 
 POST /api/login
-Login and get access & refresh tokens
-{
-    "email": "user@example.com",
-    "password": "securepassword"
-}
+Sign in and get your access passes
 
 PUT /api/users
-Update user's email and password (requires JWT)
-Headers: Authorization: Bearer <access_token>
-{
-    "email": "newemail@example.com",
-    "password": "newpassword"
-}
+Update your profile (need to be logged in)
 
 POST /api/refresh
-Get new access token using refresh token
-Headers: Authorization: Bearer <refresh_token>
+Get a new access pass using your refresh token
 
 POST /api/revoke
-Revoke a refresh token
-Headers: Authorization: Bearer <refresh_token>
+Log out (invalidate your refresh token)
 ```
 
-### Chirps
+### 📝 Chirps
 ```http
 POST /api/chirps
-Create a new chirp (requires JWT, 140 char limit)
-{
-    "body": "Hello world!"
-}
+Post a new chirp (140 char limit)
 
 GET /api/chirps
-Get all chirps
+See all chirps
 
 GET /api/chirps/{chirpID}
-Get a specific chirp
+Look at a specific chirp
 
 DELETE /api/chirps/{chirpID}
-Delete a chirp (requires JWT, must be author)
-Headers: Authorization: Bearer <access_token>
+Delete your chirp (you can only delete your own!)
 ```
 
-### Admin
+### 💳 Polka Integration
+```http
+POST /api/polka/webhooks
+Handles automatic Chirpy Red membership activation
+Requires Polka API key for security
+```
+
+### 🔧 Admin Tools
 ```http
 GET /admin/metrics
-View request metrics
+Check how many people are using Chirpy
 
 POST /admin/reset
-Reset database (dev only)
+Reset everything (only works in development)
 ```
 
-### Health Check
+### 🏥 Health Check
 ```http
 GET /api/healthz
-Check API health
+Make sure the server is alive and kicking
 ```
 
 ## Security Features
-- Password hashing using bcrypt
-- JWT-based authentication with refresh tokens
-- Access tokens expire in 1 hour
-- Refresh tokens expire in 60 days
-- Content moderation (bad word filtering)
-- Database-level email uniqueness
-- Environment-based security controls
-- Author-only chirp deletion
+- Super secure password storage
+- Login tokens that expire (so hackers can't use old ones)
+- Refresh tokens for staying logged in safely
+- Content filtering (keeps things family-friendly)
+- Email uniqueness (no duplicate accounts)
+- Environment-based security
+- Polka webhook authentication
+- Only authors can delete their chirps
 
 ## Contributing
 1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+2. Create your feature branch (`git checkout -b feature/cool-new-thing`)
 3. Make your changes
-4. Run tests (`go test ./...`)
-5. Commit your changes (`git commit -m 'feat: add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
+4. Test everything (`go test ./...`)
+5. Commit your changes (`git commit -m 'feat: add cool new thing'`)
+6. Push to your branch (`git push origin feature/cool-new-thing`)
 7. Open a Pull Request
 
 ## Dependencies

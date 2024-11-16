@@ -28,6 +28,10 @@ const (
 // without including their authentication token in the request header
 var ErrNoAuthHeaderIncluded = errors.New("no auth header included in request")
 
+// ErrNoAPIKeyIncluded is an error we return when someone tries to access a protected route
+// without including their API key in the request header
+var ErrNoAPIKeyIncluded = errors.New("no api key included in request")
+
 // HashPassword takes a plain text password and turns it into a scrambled version
 // This is important because we never want to store actual passwords - only their scrambled form
 // That way if someone hacks our database, they can't steal passwords
@@ -169,4 +173,19 @@ func MakeRefreshToken() (string, error) {
 	// The random bytes could contain any values (0-255), which might cause problems in text.
 	// So we convert them to hexadecimal (0-9,a-f), which is safe to use anywhere
 	return hex.EncodeToString(randomBytes), nil
+}
+
+// GetAPIKey extracts an API key from HTTP headers
+func GetAPIKey(headers http.Header) (string, error) {
+	authHeader := headers.Get("Authorization")
+	if authHeader == "" {
+		return "", ErrNoAPIKeyIncluded
+	}
+
+	splitAuth := strings.Split(authHeader, " ")
+	if len(splitAuth) != 2 || splitAuth[0] != "ApiKey" {
+		return "", errors.New("malformed api key header")
+	}
+
+	return splitAuth[1], nil
 }
