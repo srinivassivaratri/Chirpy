@@ -33,4 +33,4 @@ func (cfg *apiConfig) handlerRevoke(w http.ResponseWriter, r *http.Request) {
 	// 204 is used when the operation succeeded but there's no data to return
 	// It's common for DELETE-like operations
 	w.WriteHeader(http.StatusNoContent)
-} 
+}

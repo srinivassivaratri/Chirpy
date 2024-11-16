@@ -51,6 +51,14 @@ Login and get access & refresh tokens
     "password": "securepassword"
 }
 
+PUT /api/users
+Update user's email and password (requires JWT)
+Headers: Authorization: Bearer <access_token>
+{
+    "email": "newemail@example.com",
+    "password": "newpassword"
+}
+
 POST /api/refresh
 Get new access token using refresh token
 Headers: Authorization: Bearer <refresh_token>
@@ -73,6 +81,10 @@ Get all chirps
 
 GET /api/chirps/{chirpID}
 Get a specific chirp
+
+DELETE /api/chirps/{chirpID}
+Delete a chirp (requires JWT, must be author)
+Headers: Authorization: Bearer <access_token>
 ```
 
 ### Admin
@@ -98,6 +110,7 @@ Check API health
 - Content moderation (bad word filtering)
 - Database-level email uniqueness
 - Environment-based security controls
+- Author-only chirp deletion
 
 ## Contributing
 1. Fork the repository
