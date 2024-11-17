@@ -2,12 +2,10 @@ package main
 
 import (
 	"encoding/json"
-	"log"
 	"net/http"
 	"time"
 
 	"github.com/google/uuid"
-
 	"github.com/srinivassivaratri/Chirpy/internal/auth"
 	"github.com/srinivassivaratri/Chirpy/internal/database"
 )
@@ -17,14 +15,14 @@ type User struct {
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 	Email       string    `json:"email"`
-	IsChirpyRed bool      `json:"is_chirpy_red"`
 	Password    string    `json:"-"`
+	IsChirpyRed bool      `json:"is_chirpy_red"`
 }
 
 func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request) {
 	type parameters struct {
-		Email    string `json:"email"`
 		Password string `json:"password"`
+		Email    string `json:"email"`
 	}
 	type response struct {
 		User
@@ -49,7 +47,6 @@ func (cfg *apiConfig) handlerUsersCreate(w http.ResponseWriter, r *http.Request)
 		HashedPassword: hashedPassword,
 	})
 	if err != nil {
-		log.Printf("Error creating user: %v", err)
 		respondWithError(w, http.StatusInternalServerError, "Couldn't create user", err)
 		return
 	}

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"errors"
 	"net/http"
@@ -9,55 +10,46 @@ import (
 	"github.com/srinivassivaratri/Chirpy/internal/auth"
 )
 
-func (cfg *apiConfig) handlerWebhooks(w http.ResponseWriter, r *http.Request) {
-	// Verify API key first
-	apiKey, err := auth.GetAPIKey(r.Header)
-	if err != nil {
-		respondWithError(w, http.StatusUnauthorized, "Missing API key", err)
-		return
-	}
-
-	if apiKey != cfg.polkaKey {
-		respondWithError(w, http.StatusUnauthorized, "Invalid API key", errors.New("invalid api key"))
-		return
-	}
-
-	type webhookBody struct {
+func (cfg *apiConfig) handlerWebhook(w http.ResponseWriter, r *http.Request) {
+	type parameters struct {
 		Event string `json:"event"`
 		Data  struct {
-			UserID string `json:"user_id"`
-		} `json:"data"`
+			UserID uuid.UUID `json:"user_id"`
+		}
+	}
+
+	apiKey, err := auth.GetAPIKey(r.Header)
+	if err != nil {
+		respondWithError(w, http.StatusUnauthorized, "Couldn't find api key", err)
+		return
+	}
+	if apiKey != cfg.polkaKey {
+		respondWithError(w, http.StatusUnauthorized, "API key is invalid", err)
+		return
 	}
 
 	decoder := json.NewDecoder(r.Body)
-	payload := webhookBody{}
-	err = decoder.Decode(&payload)
+	params := parameters{}
+	err = decoder.Decode(&params)
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid request body", err)
+		respondWithError(w, http.StatusInternalServerError, "Couldn't decode parameters", err)
 		return
 	}
 
-	// If it's not a user.upgraded event, return 204 immediately
-	if payload.Event != "user.upgraded" {
+	if params.Event != "user.upgraded" {
 		w.WriteHeader(http.StatusNoContent)
 		return
 	}
 
-	// Parse the user ID from string to UUID
-	userID, err := uuid.Parse(payload.Data.UserID)
+	_, err = cfg.db.UpgradeToChirpyRed(r.Context(), params.Data.UserID)
 	if err != nil {
-		respondWithError(w, http.StatusBadRequest, "Invalid user ID format", err)
+		if errors.Is(err, sql.ErrNoRows) {
+			respondWithError(w, http.StatusNotFound, "Couldn't find user", err)
+			return
+		}
+		respondWithError(w, http.StatusInternalServerError, "Couldn't update user", err)
 		return
 	}
 
-	// Attempt to upgrade the user to Chirpy Red
-	_, err = cfg.db.UpgradeToChirpyRed(r.Context(), userID)
-	if err != nil {
-		// If user not found, return 404
-		respondWithError(w, http.StatusNotFound, "User not found", err)
-		return
-	}
-
-	// Success - return 204
 	w.WriteHeader(http.StatusNoContent)
 }
