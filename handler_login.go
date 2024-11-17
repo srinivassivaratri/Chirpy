@@ -68,11 +68,11 @@ func (cfg *apiConfig) handlerLogin(w http.ResponseWriter, r *http.Request) {
 
 	respondWithJSON(w, http.StatusOK, response{
 		User: User{
-			ID:          user.ID,
-			CreatedAt:   user.CreatedAt,
-			UpdatedAt:   user.UpdatedAt,
-			Email:       user.Email,
-			IsChirpyRed: user.IsChirpyRed,
+			ID:          user.ID,          // Unique identifier for the user, like a social security number
+			CreatedAt:   user.CreatedAt,   // Timestamp of when the user first signed up
+			UpdatedAt:   user.UpdatedAt,   // Timestamp of when the user's info was last changed
+			Email:       user.Email,       // User's email address they use to log in
+			IsChirpyRed: user.IsChirpyRed, // Whether they're a premium member (true) or free user (false)
 		},
 		Token:        accessToken,
 		RefreshToken: refreshToken,

@@ -54,11 +54,11 @@ func (cfg *apiConfig) handlerUsersUpdate(w http.ResponseWriter, r *http.Request)
 
 	respondWithJSON(w, http.StatusOK, response{
 		User: User{
-			ID:          user.ID,
-			CreatedAt:   user.CreatedAt,
-			UpdatedAt:   user.UpdatedAt,
-			Email:       user.Email,
-			IsChirpyRed: user.IsChirpyRed,
+			ID:          user.ID,          // Copies the user's unique ID number (like a digital fingerprint) from the database to send back
+			CreatedAt:   user.CreatedAt,   // Copies the timestamp of when user first signed up from database to send back
+			UpdatedAt:   user.UpdatedAt,   // Copies the timestamp of user's last info update from database to send back
+			Email:       user.Email,       // Copies the user's email address from database to send back
+			IsChirpyRed: user.IsChirpyRed, // Copies whether user has premium features (true/false) from database to send back
 		},
 	})
 }

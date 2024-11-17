@@ -17,7 +17,7 @@ type apiConfig struct {
 	db             *database.Queries
 	platform       string
 	jwtSecret      string
-	polkaKey       string
+	polkaKey       string // Stores a secret password that Polka (payment service) uses to prove it's really them when sending us messages - like a special handshake only we and Polka know
 }
 
 func main() {
@@ -37,8 +37,15 @@ func main() {
 	if jwtSecret == "" {
 		log.Fatal("JWT_SECRET environment variable is not set")
 	}
+	// Get the secret key for Polka from our computer's environment settings
+	// Think of this like looking up a secret password in a safe place
 	polkaKey := os.Getenv("POLKA_KEY")
+
+	// Check if we actually found the secret key
+	// This is like making sure the password wasn't blank
 	if polkaKey == "" {
+		// If we didn't find the key, crash the program with an error message
+		// This is like refusing to start your car if you don't have your keys
 		log.Fatal("POLKA_KEY environment variable is not set")
 	}
 
@@ -52,8 +59,8 @@ func main() {
 		fileserverHits: atomic.Int32{},
 		db:             dbQueries,
 		platform:       platform,
-		jwtSecret:      jwtSecret,
-		polkaKey:       polkaKey,
+		jwtSecret:      jwtSecret, // Stores a secret password used to create and verify login tokens - like a special stamp that proves a document is official
+		polkaKey:       polkaKey,  // Stores a secret key shared with our payment provider Polka - like a password they use to prove it's really them sending us messages
 	}
 
 	mux := http.NewServeMux()

@@ -112,15 +112,32 @@ func MakeRefreshToken() (string, error) {
 }
 
 // GetAPIKey -
+// GetAPIKey extracts an API key from HTTP headers
 func GetAPIKey(headers http.Header) (string, error) {
+	// Look for a header called "Authorization" in the request
+	// Like checking for a special badge in someone's ID card
 	authHeader := headers.Get("Authorization")
+
+	// If no Authorization header was found, tell the caller there's an error
+	// Like turning away someone who forgot their ID
 	if authHeader == "" {
 		return "", ErrNoAuthHeaderIncluded
 	}
+
+	// Split the header value into parts using space as separator
+	// The format should be "ApiKey ACTUAL-KEY-HERE"
+	// Like splitting "First Last" into ["First", "Last"]
 	splitAuth := strings.Split(authHeader, " ")
+
+	// Check two things:
+	// 1. Make sure we got at least 2 parts after splitting
+	// 2. Make sure the first part is exactly "ApiKey"
+	// Like checking an ID badge has both a photo AND correct badge type
 	if len(splitAuth) < 2 || splitAuth[0] != "ApiKey" {
 		return "", errors.New("malformed authorization header")
 	}
 
+	// Return just the key part (the second piece after splitting)
+	// Like returning just the ID number from a complete badge
 	return splitAuth[1], nil
 }
