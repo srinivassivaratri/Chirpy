@@ -34,9 +34,20 @@ Our system is built like a well-organized restaurant:
 - Counts how many people visit
 - Like having security guards and people counters at the door
 
-## Architecture
+## Technical Architecture
 
 ```mermaid
+%%{
+  init: {
+    'theme': 'dark',
+    'themeVariables': {
+      'fontFamily': 'monospace',
+      'fontSize': '14px',
+      'lineWidth': '2px'
+    }
+  }
+}%%
+
 graph TD
     subgraph Client
         UI[HTTP Client/Browser]
@@ -89,11 +100,11 @@ graph TD
     Polka -->|Webhooks| PaymentService
     PaymentService -->|Update Status| Users
 
-    %% Styling
-    classDef primary fill:#f9f,stroke:#333,stroke-width:2px
-    classDef secondary fill:#bbf,stroke:#333,stroke-width:2px
-    classDef database fill:#dfd,stroke:#333,stroke-width:2px
-    classDef external fill:#fdd,stroke:#333,stroke-width:2px
+    %% Styling optimized for dark theme
+    classDef primary fill:#00ff9f,stroke:#00ff9f,stroke-width:2px,color:#000000
+    classDef secondary fill:#00b7ff,stroke:#00b7ff,stroke-width:2px,color:#000000
+    classDef database fill:#ff69b4,stroke:#ff69b4,stroke-width:2px,color:#000000
+    classDef external fill:#ff9400,stroke:#ff9400,stroke-width:2px,color:#000000
     
     class UI,MUX,Auth,Handlers,Metrics primary
     class UserService,ChirpService,AuthService,PaymentService secondary
