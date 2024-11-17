@@ -34,7 +34,7 @@ Our system is built like a well-organized restaurant:
 - Counts how many people visit
 - Like having security guards and people counters at the door
 
-## Technical Architecture
+## Architecture
 
 ```mermaid
 %%{
