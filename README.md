@@ -67,7 +67,9 @@ Post a new chirp (140 char limit)
 
 GET /api/chirps
 See all chirps
-Optional: Filter by author with ?author_id=<uuid>
+Optional parameters:
+- sort=asc|desc (default: asc) - Sort by creation time
+- author_id=<uuid> - Filter by author
 
 GET /api/chirps/{chirpID}
 Look at a specific chirp
